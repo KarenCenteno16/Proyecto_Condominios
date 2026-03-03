@@ -1,21 +1,22 @@
 <?php
+
 namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow; 
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class Mensaje implements ShouldBroadcastNow
+class NuevoMensaje implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $texto;
+    public $mensaje;
 
-    public function __construct($texto)
+    public function __construct($mensaje)
     {
-        $this->texto = $texto;
+        $this->mensaje = $mensaje;
     }
 
     public function broadcastOn(): array
@@ -23,11 +24,8 @@ class Mensaje implements ShouldBroadcastNow
         return [new Channel('chat-canal')];
     }
 
-    public function broadcastAs(): string
+    public function broadcastAs()
     {
-        return 'NuevoMensaje';
+        return 'NuevoMensaje'; 
     }
-
-    
 }
-
