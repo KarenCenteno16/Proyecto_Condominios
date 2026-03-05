@@ -7,7 +7,11 @@ use App\Events\Mensaje;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ReporteController;
 
+
+// Esta es la ruta que te falta y está causando el 404
+Route::get('/reportes/usuario/{id}', [ReporteController::class, 'getPorUsuario']);
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -25,6 +29,27 @@ Route::post('/enviar-mensaje', [ChatController::class, 'enviarMensaje']);
 
 Route::get('/usuarios-chat', [ChatController::class, 'usuariosChat']);
 
+// Listado de notificaciones del usuario
+Route::get('/notificaciones/{id}', function($id) {
+    return App\Models\Notificacion::where('usuario_id', $id)
+        ->where('leido', false)
+        ->latest()
+        ->get();
+});
+
+// Marcar como leída
+Route::post('/notificaciones/leer/{id}', function($id) {
+    App\Models\Notificacion::where('id', $id)->update(['leido' => true]);
+    return response()->json(['res' => true]);
+});
+
+Route::get('/reportes', [ReporteController::class, 'index']);
+Route::post('/reportes', [ReporteController::class, 'store']);
+Route::delete('/reportes/{id}', [ReporteController::class, 'destroy']);
+Route::put('/reportes/{id}', [ReporteController::class, 'update']);
+
+
+Route::get('/reportes/usuario/{id}', [ReporteController::class, 'reportesPorUsuario']);
 
 // // ruta para (WebSocket)
 // Route::post('/enviar-mensaje', function (Request $request) {
