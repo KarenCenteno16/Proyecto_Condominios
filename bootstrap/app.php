@@ -13,12 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // Esto asegura que Laravel no intente redireccionar a una vista 'login'
-        // cuando detecta que la petición viene de una API
-        $middleware->redirectTo(
-            guests: '/api/login',
-            users: '/home'
-        );
+        $middleware->alias([
+            'role' => \App\Http\Middleware\CheckRole::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         // Esto fuerza a Laravel a responder siempre en JSON si la ruta empieza por /api
