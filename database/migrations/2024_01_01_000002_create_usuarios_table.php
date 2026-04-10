@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // IMPORTANTE: Asegúrate de que la migración de 'personas' se ejecute ANTES que esta
         Schema::create('usuarios', function (Blueprint $table) {
             $table->id();
             // id_persona debe ser del mismo tipo que el ID en la tabla personas
