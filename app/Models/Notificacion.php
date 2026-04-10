@@ -16,4 +16,4 @@ class Notificacion extends Model
         'url', 
         'leido'
     ];
-} //
+} 

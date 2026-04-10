@@ -12,12 +12,15 @@ use App\Http\Controllers\ReporteController;
 use App\Models\Usuario;
 use Illuminate\Auth\Events\Verified;
 
-//publicas
-Route::post('/login', [AuthController::class, 'login']);
+//rutas publicas
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/register', [AuthController::class, 'register']);
 
-//verificacion correo
+// recuperacion publicas
+Route::post('/forgot-password', [AuthController::class, 'sendResetCode']);
+Route::post('/reset-password', [AuthController::class, 'resetPasswordWithCode']);
 
+//para verificar el correo
 Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
     $user = Usuario::findOrFail($id);
 
@@ -38,25 +41,27 @@ Route::get('/email/verify/{id}/{hash}', function ($id, $hash) {
 
     return redirect('http://localhost:5173/?verified=1');
 })->name('verification.verify');
-//protegidas
 
+//rutas que estan protegidas
 Route::middleware('auth:sanctum')->group(function () {
-
 
     Route::post('/update-password', [AuthController::class, 'updatePassword']);
 
-    //residentes
+    // Residentes
     Route::get('/residentes', [ResidentesController::class, 'index']);
     Route::put('/residentes/{id}', [ResidentesController::class, 'update']);
     Route::delete('/residentes/{id}', [ResidentesController::class, 'destroy']);
     Route::get('/departamentos', [ResidentesController::class, 'getDepartamentos']);
 
+    // Dashboard
     Route::get('/dashboard-stats', [DashboardController::class, 'stats']);
 
+    // Chat
     Route::get('/usuarios-chat', [ChatController::class, 'usuariosChat']);
     Route::get('/mensajes/{remitente}/{destinatario}', [ChatController::class, 'obtenerMensajes']);
     Route::post('/enviar-mensaje', [ChatController::class, 'enviarMensaje']);
 
+    // Notificaciones
     Route::get('/notificaciones/{id}', function ($id) {
         return \App\Models\Notificacion::where('usuario_id', $id)
             ->where('leido', false)
@@ -71,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return response()->json(['res' => true]);
     });
 
+    // Reportes
     Route::get('/reportes', [ReporteController::class, 'index']);
     Route::post('/reportes', [ReporteController::class, 'store']);
     Route::delete('/reportes/{id}', [ReporteController::class, 'destroy']);
